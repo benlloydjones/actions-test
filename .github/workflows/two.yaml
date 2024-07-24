@@ -6,13 +6,19 @@ jobs:
   get-secret:
     outputs:
       the_secret: ${{ steps.get-secret.outputs.secret }}
+      not_secret: ${{ steps.get-not-secret.outputs.not_secret }}
     runs-on: ubuntu-latest
     steps:
       - name: Get Secret
         id: get-secret
         run: echo "secret=fart" >> "$GITHUB_OUTPUT"
+      - name: Get Not Secret
+        id: get-not-secret
+        run: echo "not_secret=stink" >> "$GITHUB_OUTPUT"
   call-two-with-secret:
     needs: get-secret
     uses: benlloydjones/actions-test/.github/workflows/three.yaml@main
+    with:
+      not_secret: ${{ needs.get-secret.outputs.not_secret }}
     secrets:
       the_secret: ${{ needs.get-secret.outputs.the_secret }}
