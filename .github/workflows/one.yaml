@@ -5,4 +5,4 @@ on:
 jobs:
   call-two:
     name: calls workflow two
-    uses: benlloydjones/github_actions/.github/workflows/two.yaml@main
+    uses: benlloydjones/actions-test/.github/workflows/two.yaml@main

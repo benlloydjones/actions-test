@@ -13,6 +13,6 @@ jobs:
         run: echo "secret=fart" >> "$GITHUB_OUTPUT"
   call-two-with-secret:
     needs: get-secret
-    uses: benlloydjones/github_actions/.github/workflows/three.yaml@main
+    uses: benlloydjones/actions-test/.github/workflows/three.yaml@main
     with:
       the_secret: ${{ needs.get-secret.outputs.the_secret }}
