@@ -15,10 +15,12 @@ jobs:
       - name: Get Not Secret
         id: get-not-secret
         run: echo "not_secret=stink" >> "$GITHUB_OUTPUT"
-  call-two-with-secret:
+  call-three-with-secret:
     needs: get-secret
-    uses: benlloydjones/actions-test/.github/workflows/three.yaml@main
-    with:
-      not_secret: ${{ needs.get-secret.outputs.not_secret }}
-    secrets:
-      the_secret: ${{ needs.get-secret.outputs.the_secret }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Three
+        uses: benlloydjones/actions-test/.github/workflows/three.yaml@main
+        with:
+          not_secret: ${{ needs.get-secret.outputs.not_secret }}
+          the_secret: ${{ needs.get-secret.outputs.the_secret }}
