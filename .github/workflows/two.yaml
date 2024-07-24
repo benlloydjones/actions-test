@@ -14,5 +14,5 @@ jobs:
   call-two-with-secret:
     needs: get-secret
     uses: benlloydjones/actions-test/.github/workflows/three.yaml@main
-    with:
+    secrets:
       the_secret: ${{ needs.get-secret.outputs.the_secret }}
