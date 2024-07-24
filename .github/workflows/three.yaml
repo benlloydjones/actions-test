@@ -1,0 +1,13 @@
+name: Part Three
+on:
+  workflow_call:
+    secrets:
+      the_secret:
+        required: true
+
+jobs:
+  share-secret:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Share Secret
+        run: echo ${{ secrets.the_secret }}
