@@ -22,10 +22,9 @@ jobs:
         run: |
           WORKING_DIRECTORY=$(pwd)
           cd pr
-          git log
-          # GIT_CHANGED=$(git diff "${BASE_HASH}" "${HEAD_HASH}" --name-only)
-          # echo ${GIT_CHANGED}
-          # CHANGED_DIR=$($GIT_CHANGED | xargs dirname | sort | uniq)
-          # echo ${CHANGED_DIR}
+          GIT_CHANGED=$(git diff "${BASE_HASH}" "${HEAD_HASH}" --name-only)
+          echo ${GIT_CHANGED}
+          CHANGED_DIR=$($GIT_CHANGED | xargs dirname | sort | uniq)
+          echo ${CHANGED_DIR}
           cd ${WORKING_DIRECTORY}
           echo pwd
