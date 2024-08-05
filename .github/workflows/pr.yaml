@@ -19,9 +19,9 @@ jobs:
           BASE_HASH: ${{ github.event.pull_request.base.sha }}
           HEAD_HASH: ${{ github.event.pull_request.head.sha }}
         run: |
-          WORKING_DIRECTORY=${pwd}
+          WORKING_DIRECTORY=$(pwd)
           cd pr
-          CHANGED_DIR=${git diff "${BASE_HASH}" "${HEAD_HASH}" --name-only | xargs dirname | sort | uniq}
+          CHANGED_DIR="$(git diff "BASE_HASH $HEAD_HASH --name-only | xargs dirname | sort | uniq)"
           echo $CHANGED_DIR
           cd ${WORKING_DIRECTORY}
           echo pwd
