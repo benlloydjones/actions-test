@@ -26,3 +26,13 @@ jobs:
           echo ${CHANGED_DIR}
           cd ${WORKING_DIRECTORY}
           echo pwd
+      - name: create cluster
+        uses: helm/kind-action@v1
+        with:
+          kubectl_version: 1.29.4
+          node_image: kindest/node:1.29.4
+      - name: do a helm
+        shell: bash
+        run: |
+          helm create test-chart
+          helm template ./test-chart --output-dir ./here
