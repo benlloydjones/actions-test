@@ -12,6 +12,7 @@ jobs:
         with:
             ref: ${{ github.event.pull_request.head.sha }}
             path: pr
+            fetch-depth: 0
       - name: get commit hashes
         shell: bash
         id: get-commit-hashes
