@@ -1,0 +1,8 @@
+name: Return a Matrix
+description: Returns a matrix from a JS action
+outputs:
+  dependencies:
+    description: The matrix returned for testing
+runs:
+  using: node20
+  main: index.js
