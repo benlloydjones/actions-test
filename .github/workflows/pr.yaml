@@ -26,6 +26,26 @@ jobs:
           echo ${CHANGED_DIR}
           cd ${WORKING_DIRECTORY}
           echo pwd
+      - name: create list
+        id: create-list
+        shell: bash
+        run: |
+          FILE_ONE="DIR/FILE/ONE"
+          FILE_TWO="DIR/FILE/TWO"
+          FILES=("${FILE_ONE}" "${FILE_TWO}")
+          echo ${FILES[0]}
+          echo ${FILES[1]}
+          echo "FILES_STRING=${FILES[@]}" >> "$GITHUB_OUTPUT"
+      - name: expose list
+        id: expose-list
+        shell: bash
+        env:
+          FILES_STRING: ${{ steps.create-list.outputs.files_string }}
+        run: |
+          IFS=' ' read -r -a FILES <<< $FILES_STRING
+          echo ${FILES[0]}
+          echo ${FILES[1]}
+          echo ${FILES[@]}
       - name: create cluster
         uses: helm/kind-action@v1.10.0
         with:
