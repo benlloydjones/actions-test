@@ -42,10 +42,10 @@ jobs:
         env:
           FILES_STRING: ${{ steps.create-list.outputs.files_string }}
         run: |
-          IFS=' ' read -r -a FILES <<< $FILES_STRING
-          echo ${FILES[0]}
-          echo ${FILES[1]}
-          echo ${FILES[@]}
+          IFS=' ' read -r -a FILES_NEW <<< $FILES_STRING
+          echo ${FILES_NEW[0]}
+          echo ${FILES_NEW[1]}
+          echo ${FILES_NEW[@]}
       - name: create cluster
         uses: helm/kind-action@v1.10.0
         with:
