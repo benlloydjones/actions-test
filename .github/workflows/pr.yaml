@@ -23,11 +23,8 @@ jobs:
         id: get-updated-versions
         shell: bash
         run: |
-          ls -al
-          cat target/helm/tigera-operator/calico/Chart.yaml
-          cat pr/helm/tigera-operator/calico/Chart.yaml
           CHANGED_VERSIONS=$(diff --recursive target pr | grep "version:" || true)
-          echo "changed_versions=${CHANGED_VERSIONS}" >> "$GITHUB_OUTPUT"
+          echo "changed_versions=${CHANGED_VERSIONS//\\n/ }" >> "$GITHUB_OUTPUT"
       - name: expose updated versions
         shell: bash
         run: |
