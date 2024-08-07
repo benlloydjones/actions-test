@@ -2,7 +2,7 @@ name: Run Trivy Scan
 on: workflow_dispatch
 
 jobs:
-	run-trivy-scan:
+  run-trivy-scan:
     runs-on: ubuntu-latest
     steps:
       - name: Run scan
