@@ -22,5 +22,8 @@ jobs:
       - name: Get updated versions
         shell: bash
         run: |
+          ls -al
+          cat target/helm/tigera-operator/calico/Chart.yaml
+          cat pr/helm/tigera-operator/calico/Chart.yaml
           CHANGED_VERSIONS=$(diff --recursive target pr | grep "version:" || true)
           echo ${CHANGED_VERSIONS}
