@@ -10,13 +10,13 @@ jobs:
       - name: Checkout PR latest commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_requst.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}
           path: pr
           fetch-depth: 0
       - name: Checkout main
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pusll_request.base.sha }}
+          ref: ${{ github.event.pull_request.base.sha }}
           path: target
           fetch-depth: 0
       - name: Get updated versions
