@@ -7,29 +7,20 @@ jobs:
   build-charts:
     runs-on: ubuntu-latest
     steps:
-      - name: Create Kind Cluster
-        uses: helm/kind-action@v1.10.0
-        with:
-          kubectl_version: v1.29.4
-          node_image: kindest/node:v1.29.4
-          wait: 120s
       - name: Checkout PR latest commit
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_requst.head.sha }}
           path: pr
           fetch-depth: 0
-      - name: Template Helm Chart
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pusll_request.base.sha }}
+          path: target
+          fetch-depth: 0
+      - name: Get updated versions
         shell: bash
-        env:
-          CHANGED_DIR: /helm/tigera-operator/calico
-          VALUES_FILE: values.yaml
-          PR: pr
         run: |
-          echo "Building chart dependencies Before templating"
-          helm dependency update ${PR}${CHANGED_DIR}
-
-          echo "Templating out helm chart"
-          helm template ${PR}${CHANGED_DIR} -f ${PR}${CHANGED_DIR}/${VALUES_FILE} --output-dir rendered/pr
-
-          echo "Helm chart templated"
+          CHANGED_VERSIONS=$(diff --recursive target pr | grep "version:" || true)
+          echo ${CHANGED_VERSIONS}
