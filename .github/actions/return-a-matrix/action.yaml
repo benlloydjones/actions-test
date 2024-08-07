@@ -5,4 +5,4 @@ outputs:
     description: The matrix returned for testing
 runs:
   using: node20
-  main: index.js
+  main: dist/index.js
