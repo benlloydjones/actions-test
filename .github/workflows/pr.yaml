@@ -28,3 +28,8 @@ jobs:
         run: |
           echo "Building chart dependencies Before templating"
           helm dependency update ${PR}${CHANGED_DIR}
+
+          echo "Templating out helm chart"
+          helm template ${PR}${CHANGED_DIR} -f ${PR}${CHANGED_DIR}/${VALUES_FILE} --output-dir rendered/pr
+
+          echo "Helm chart templated"
