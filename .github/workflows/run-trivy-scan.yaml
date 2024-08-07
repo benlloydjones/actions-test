@@ -1,0 +1,21 @@
+name: Run Trivy Scan
+on: workflow_dispatch
+
+jobs:
+	run-trivy-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.10.1
+          format: json
+          scanners: vuln
+          exit-code: 0
+          output: output.json
+      - name: Store scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-results
+          path: output.json
+          retention-days: 2
