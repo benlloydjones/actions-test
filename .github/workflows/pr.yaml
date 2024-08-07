@@ -24,7 +24,7 @@ jobs:
         shell: bash
         run: |
           CHANGED_VERSIONS=$(diff --recursive target pr | grep "version:" || true)
-          echo "changed_versions=${CHANGED_VERSIONS//\\n/ }" >> "$GITHUB_OUTPUT"
+          echo "changed_versions=${CHANGED_VERSIONS//$'\n'/ }" >> "$GITHUB_OUTPUT"
       - name: expose updated versions
         shell: bash
         run: |
