@@ -1,0 +1,8 @@
+tigera-operator:
+  tolerations: []
+  
+  installation:
+    kubernetesProvider: EKS
+
+  apiServer:
+    enabled: false

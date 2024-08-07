@@ -1,32 +1,30 @@
 name: On PR
-on: workflow_dispatch
+on:
+  pull_request_target:
+    types: [ opened, synchronize, reopened ]
 
 jobs:
-  get-matrix:
-    name: Testing passing matrices around
+  build-charts:
     runs-on: ubuntu-latest
-    outputs:
-      dependencies: ${{ steps.get-matrix.outputs.dependencies }}
     steps:
-      - name: Get Matrix
-        id: get-matrix
-        uses: benlloydjones/actions-test/.github/actions/return-a-matrix@main
-  use-matrix:
-    name: Use the created matrix
-    runs-on: ubuntu-latest
-    needs: get-matrix
-    strategy:
-      matrix:
-        dependency: ${{ fromJson(needs.get-matrix.outputs.dependencies )}}
-    steps:
-      - name: expose values of matrix
+      - name: Create Kind Cluster
+        uses: helm/kind-action@v1.10.0
+        with:
+          kubectl_version: v1.29.4
+          node_image: kindest/node:v1.29.4
+          wait: 120s
+      - name: Checkout PR latest commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_requst.head.sha }}
+          path: pr
+          fetch-depth: 0
+      - name: Template Helm Chart
+        shell: bash
         env:
-          name: ${{ matrix.dependency.name }}
-          currentVersion: ${{ matrix.dependency.currentVersion }}
-          updatedVersion: ${{ matrix.dependency.updatedVersion }}
-          filePrefix: ${{ matrix.dependency.filePrefix }}
+          CHANGED_DIR: /helm/tigera-operator/calico
+          VALUES_FILE: values.yaml
+          PR: pr
         run: |
-         echo ${name}
-         echo ${currentVersion}
-         echo ${updatedVersion}
-         echo ${filePrefix}
+          echo "Building chart dependencies Before templating"
+          helm dependency update ${PR}${CHANGED_DIR}
