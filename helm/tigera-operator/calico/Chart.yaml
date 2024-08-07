@@ -4,5 +4,5 @@ name: calico
 version: 1.0.0
 dependencies:
   - name: tigera-operator
-    version: v3.28.0
+    version: v3.29.0
     repository: https://docs.projectcalico.org/charts
