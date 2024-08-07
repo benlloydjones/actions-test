@@ -27,6 +27,8 @@ jobs:
           echo "changed_versions=${CHANGED_VERSIONS//$'\n'/ }" >> "$GITHUB_OUTPUT"
       - name: expose updated versions
         shell: bash
+        env:
+          CHANGED_VERSIONS: ${{ steps.get-updated-versions.outputs.changed_versions }}
         run: |
           echo "Echoing output:"
-          echo ${{ steps.get-updated-versions.outputs.changed_versions }}
+          echo ${CHANGED_VERSIONS}
