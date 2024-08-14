@@ -1,7 +1,5 @@
 name: On PR
-on:
-  pull_request_target:
-    types: [ opened, synchronize, reopened ]
+on: workflow_dispatch
 
 permissions:
   contents: read
