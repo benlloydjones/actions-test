@@ -3,32 +3,46 @@ on:
   pull_request_target:
     types: [ opened, synchronize, reopened ]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build-charts:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout PR latest commit
+      - name: Checkout actions-oidc-debugger
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          path: pr
-          fetch-depth: 0
-      - name: Checkout main
-        uses: actions/checkout@v4
+          repository: github/actions-oidc-debugger
+          ref: main
+          path: ./.github/actions/actions-oidc-debugger
+      - name: Debug OIDC Claims
+        uses: ./.github/actions/actions-oidc-debugger
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
-          path: target
-          fetch-depth: 0
-      - name: Get updated versions
-        id: get-updated-versions
-        shell: bash
-        run: |
-          CHANGED_VERSIONS=$(diff --recursive target pr | grep "version:" || true)
-          echo "changed_versions=${CHANGED_VERSIONS//$'\n'/ }" >> "$GITHUB_OUTPUT"
-      - name: expose updated versions
-        shell: bash
-        env:
-          CHANGED_VERSIONS: ${{ steps.get-updated-versions.outputs.changed_versions }}
-        run: |
-          echo "Echoing output:"
-          echo ${CHANGED_VERSIONS}
+          audience: '${{ github.server_url }}/${{ github.repository_owner }}'
+      # - name: Checkout PR latest commit
+      #   uses: actions/checkout@v4
+      #   with:
+      #     ref: ${{ github.event.pull_request.head.sha }}
+      #     path: pr
+      #     fetch-depth: 0
+      # - name: Checkout main
+      #   uses: actions/checkout@v4
+      #   with:
+      #     ref: ${{ github.event.pull_request.base.sha }}
+      #     path: target
+      #     fetch-depth: 0
+      # - name: Get updated versions
+      #   id: get-updated-versions
+      #   shell: bash
+      #   run: |
+      #     CHANGED_VERSIONS=$(diff --recursive target pr | grep "version:" || true)
+      #     echo "changed_versions=${CHANGED_VERSIONS//$'\n'/ }" >> "$GITHUB_OUTPUT"
+      # - name: expose updated versions
+      #   shell: bash
+      #   env:
+      #     CHANGED_VERSIONS: ${{ steps.get-updated-versions.outputs.changed_versions }}
+      #   run: |
+      #     echo "Echoing output:"
+      #     echo ${CHANGED_VERSIONS}
