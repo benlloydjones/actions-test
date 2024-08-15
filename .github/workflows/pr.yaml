@@ -9,38 +9,37 @@ jobs:
   build-charts:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout actions-oidc-debugger
+      - name: Checkout PR latest commit
         uses: actions/checkout@v4
         with:
-          repository: github/actions-oidc-debugger
-          ref: main
-          path: ./.github/actions/actions-oidc-debugger
-      - name: Debug OIDC Claims
-        uses: ./.github/actions/actions-oidc-debugger
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          fetch-depth: 0
+      - name: Checkout main
+        uses: actions/checkout@v4
         with:
-          audience: '${{ github.server_url }}/${{ github.repository_owner }}'
-      # - name: Checkout PR latest commit
-      #   uses: actions/checkout@v4
-      #   with:
-      #     ref: ${{ github.event.pull_request.head.sha }}
-      #     path: pr
-      #     fetch-depth: 0
-      # - name: Checkout main
-      #   uses: actions/checkout@v4
-      #   with:
-      #     ref: ${{ github.event.pull_request.base.sha }}
-      #     path: target
-      #     fetch-depth: 0
-      # - name: Get updated versions
-      #   id: get-updated-versions
-      #   shell: bash
-      #   run: |
-      #     CHANGED_VERSIONS=$(diff --recursive target pr | grep "version:" || true)
-      #     echo "changed_versions=${CHANGED_VERSIONS//$'\n'/ }" >> "$GITHUB_OUTPUT"
-      # - name: expose updated versions
-      #   shell: bash
-      #   env:
-      #     CHANGED_VERSIONS: ${{ steps.get-updated-versions.outputs.changed_versions }}
-      #   run: |
-      #     echo "Echoing output:"
-      #     echo ${CHANGED_VERSIONS}
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: target
+          fetch-depth: 0
+      - name: Get updated versions
+        id: get-updated-versions
+        shell: bash
+        run: |
+          CHANGED_VERSIONS=$(diff --recursive target pr | grep "version:" || true)
+          echo "changed_versions=${CHANGED_VERSIONS//$'\n'/ }" >> "$GITHUB_OUTPUT"
+      - name: expose updated versions
+        id: share-hyphen
+        shell: bash
+        env:
+          CHANGED_VERSIONS: ${{ steps.get-updated-versions.outputs.changed_versions }}
+        run: |
+          echo "Echoing output:"
+          echo ${CHANGED_VERSIONS}
+          echo "output_with_hyphen=/this/should-work/" >> "$GITHUB_OUTPUT"
+      - name: expose hyphenated output
+        shell: bash
+        env:
+          HYPHENATED_OUTPUT: ${{ steps.share-hyphen.outputs.output_with_hyphen }}
+        run: |
+          echo "Echoing hyphen"
+          echo ${HYPHENATED_OUTPUT}
