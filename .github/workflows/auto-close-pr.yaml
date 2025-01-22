@@ -1,0 +1,27 @@
+name: Auto close PR
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  comment-and-close:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          fetch-depth: 0
+      - name: Close and comment
+        id: close-and-comment
+        shell: bash
+        run: |
+          gh pr close $PR_URL -c "closing PR automatically"
+        env:
+          PR_URL: ${{ github.event.pull_request.url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
