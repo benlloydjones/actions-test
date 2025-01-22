@@ -21,6 +21,7 @@ jobs:
         id: close-and-comment
         shell: bash
         run: |
+          cd pr
           gh pr close $PR_URL -c "closing PR automatically"
         env:
           PR_URL: ${{ github.event.pull_request.url }}
