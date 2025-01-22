@@ -22,7 +22,7 @@ jobs:
         shell: bash
         run: |
           cd pr
-          gh pr close $PR_URL -c "closing PR automatically"
+          gh pr close $PR_NUMBER -c "closing PR automatically"
         env:
-          PR_URL: ${{ github.event.pull_request.url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
