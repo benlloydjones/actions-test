@@ -56,7 +56,7 @@ jobs:
         env:
           CHANGED_DIR: ${{ steps.get-changed-dir.outputs.changed_dir }}
         run: |
-
+          cd pr
           cd $CHANGED_DIR
 
           VALUES_FILES=()
