@@ -37,11 +37,45 @@ jobs:
         run: |
           echo "Echoing output:"
           echo ${CHANGED_VERSIONS}
-          echo "output_with_hyphen=/this/should-work/" >> "$GITHUB_OUTPUT"
-      - name: expose hyphenated output
+      - name: get changed dir
+        id: get-changed-dir
         shell: bash
         env:
-          HYPHENATED_OUTPUT: ${{ steps.share-hyphen.outputs.output_with_hyphen }}
+          BASE_HASH: ${{ github.event.pull_request.base.sha }}
+          HEAD_HASH: ${{ github.event.pull_request.head.sha }}
         run: |
-          echo "Echoing hyphen"
-          echo ${HYPHENATED_OUTPUT}
+          WORKDING_DIR=$(pwd)
+          cd pr
+          CHANGED_DIR=$(git diff --merge-base "${BASE_HASH}" "${HEAD_HASH}" --name-only | xargs dirname | sort | uniq)
+          echo $CHANGED_DIR
+          echo "changed_dir=${CHANGED_DIR}" >> "${GITHUB_OUTPUT}"
+          cd ${WORKING_DIR}
+      - name: generate list of helm values files
+        id: generate-values-files
+        shell: bash
+        env:
+          CHANGED_DIR: ${{ steps.get-changed-dir.outputs.changed_dir }}
+        run: |
+
+          cd $CHANGED_DIR
+
+          VALUES_FILES=()
+          GENERIC_VALUES_FILE=""
+          PROD_VALUES_FILE=""
+          TEST_VALUES_FILE=""
+          DEV_VALUES_FILE=""
+
+          get_values_file () {
+            VALUES_FILE=$(ls | grep $1 || true)
+            echo $VALUES_FILE
+          }
+
+          GENERIC_VALUES_FILE=$(get_values_file "values.yaml")
+          PROD_VALUES_FILE=$(get_values_file "pay-prod.yaml")
+          TEST_VALUES_FILE=$(get_values_file "pay-test.yaml")
+          DEV_VALUES_FILE=$(get_values_file "pay-dev.yaml")
+
+          echo $GENERIC_VALUES_FILE
+          echo $PROD_VALUES_FILE
+          echo $TEST_VALUES_FILE
+          echo $DEV_VALUES_FILE
