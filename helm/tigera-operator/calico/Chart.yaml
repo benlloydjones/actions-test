@@ -1,7 +1,7 @@
 apiVersion: v2
 description: Calico CNI Plugin
 name: calico
-version: 1.0.0
+version: 1.0.1
 dependencies:
   - name: tigera-operator
     version: v3.28.0
