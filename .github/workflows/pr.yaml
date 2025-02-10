@@ -75,7 +75,30 @@ jobs:
           TEST_VALUES_FILE=$(get_values_file "pay-test.yaml")
           DEV_VALUES_FILE=$(get_values_file "pay-dev.yaml")
 
-          echo $GENERIC_VALUES_FILE
-          echo $PROD_VALUES_FILE
-          echo $TEST_VALUES_FILE
-          echo $DEV_VALUES_FILE
+          if [[ "$GENERIC_VALUES_FILE" != "" ]]; then
+            VALUES_FILES=("${VALUES_FILES[@]}" "${GENERIC_VALUES_FILE}")
+          fi
+
+          if [[ "$PROD_VALUES_FILE" != "" ]]; then
+            VALUES_FILES=("${VALUES_FILES[@]}" "${PROD_VALUES_FILE}")
+          fi
+
+          if [[ "$PROD_VALUES_FILE" == "" && "$TEST_VALUES_FILE" != "" ]]; then
+            VALUES_FILES=("${VALUES_FILES[@]}" "${TEST_VALUES_FILE}")
+          fi
+
+          if [[ "$PROD_VALUES_FILE" == "" && "$TEST_VALUES_FILE" == "" && "${DEV_VALUES_FILE}" != "" ]]; then
+            VALUES_FILES=("${VALUES_FILES[@]}" "${DEV_VALUES_FILE}")
+          fi
+
+          echo ${VALUES_FILES[@]}
+
+          echo "VALUES_FILES_STRING=${VALUES_FILES[@]}" >> "$GITHUB_OUTPUT"
+
+      - name: expose values files
+        id: expose-values-files
+        shell: bash
+        env:
+          VALUES_FILES_STRING: ${{ steps.generate-values-files.outputs.values_files_string }}
+        run: |
+          echo ${VALUES_FILES_STRING}
